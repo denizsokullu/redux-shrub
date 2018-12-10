@@ -13,14 +13,14 @@
   ],
   "license": "MIT",
   "author": "Deniz Sokullu",
-  "homepage": "https://github.com/denizsokullu/redux-wrapper.git",
+  "homepage": "https://github.com/denizsokullu/redux-shrub.git",
   "repository": {
     "type": "git",
-    "url": "https://github.com/denizsokullu/redux-wrapper.git"
+    "url": "https://github.com/denizsokullu/redux-shrub.git"
   },
   "bugs": {
     "mail": "denizaydinsokullu@gmail.com",
-    "url": "https://github.com/denizsokullu/redux-wrapper/issues"
+    "url": "https://github.com/denizsokullu/redux-shrub/issues"
   },
   "main": "lib/index.js",
   "scripts": {

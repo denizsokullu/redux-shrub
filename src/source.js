@@ -13,7 +13,7 @@ import { Map } from 'immutable'
 const flattenLeavesOnly = (obj) => Object.assign({}, ...function _flatten(o) { return [].concat(...Object.keys(o).map(k => typeof o[k] === 'object' ? _flatten(o[k]) : ({[k]: o[k]})))}(obj))
 
 
-class ReduxWrapper {
+class ReduxShrub {
   constructor({ slug,
                 includeSelfSelector = true,
                 includeSlugInChildSelectors = false,
@@ -42,7 +42,7 @@ class ReduxWrapper {
   _isPolyBranh = () => this.type === 'polyBranch'
 }
 
-class ReduxLeaf extends ReduxWrapper {
+class ReduxLeaf extends ReduxShrub {
   constructor(props){
     super(props)
     this.type = 'leaf'
@@ -56,7 +56,7 @@ class ReduxLeaf extends ReduxWrapper {
   _composeReducers = this._composeSelfReducers
 }
 
-class ReduxBranch extends ReduxWrapper {
+class ReduxBranch extends ReduxShrub {
   constructor(props){
     super(props)
     this.type = 'branch'
