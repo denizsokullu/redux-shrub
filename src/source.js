@@ -101,10 +101,11 @@ class ReduxBranch extends ReduxShrub {
         return selectors
       }
     )
+    allChildSelectors = flattenLeavesOnly(allChildSelectors)
     if(this.includeSlugInChildSelectors){
       allChildSelectors = mapKeys(allChildSelectors, (v,k) => this._addCamelSlug(this.slug, k))
     }
-    return flattenLeavesOnly(merge(selfSelector, allChildSelectors))
+    return merge(selfSelector, allChildSelectors)
   }
 }
 
@@ -133,10 +134,11 @@ class ReduxRoot extends ReduxBranch {
         return selectors
       }
     )
+    allChildSelectors = flattenLeavesOnly(allChildSelectors)
     if(this.includeSlugInChildSelectors){
       allChildSelectors = mapKeys(allChildSelectors, (v,k) => this._addCamelSlug(this.slug, k))
     }
-    return flattenLeavesOnly(allChildSelectors)
+    return allChildSelectors
   }
 }
 
@@ -194,10 +196,11 @@ class ReduxPolyBranch extends ReduxBranch {
         }
       }
     )
+    childSelectors = flattenLeavesOnly(childSelectors)
     if(this.includeSlugInChildSelectors){
       childSelectors = mapKeys(childSelectors, (v,k) => this._addCamelSlug(this.slug, k))
     }
-    return flattenLeavesOnly(merge(selfSelector, childSelectors))
+    return merge(selfSelector, childSelectors)
   }
 
 }
