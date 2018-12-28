@@ -85,6 +85,71 @@ strings(state);
 
 ```
 
+API Documentation:
+```js
+class ReduxLeaf
+/*
+    slug: string
+    initialState: state of the leaf
+    options: object
+
+    The smallest building block of a redux tree.
+    A leaf can contain any type of data as its state.
+    The class can be extended to create reducers and
+    declare a function _newState that will can be
+    used to transform the initial payload to an initial
+    state.
+
+    If ReduxLeaf is not extended to create a new sub class,
+    there isn't currently a way to declare reducers.
+*/
+
+ReduxLeaf._newState
+/*
+    payload => state
+    (optional)
+    Called once when a class instance is created.
+    The value returned here is the initial state
+    for that leaf.
+*/
+```
+
+```js
+class ReduxBranch
+/*
+    slug: string
+    children: object with values ReduxLeaf, ReduxBranch
+    options: object
+
+    The glue of a redux tree.
+    A branch can be sub classed to create reducers but it
+    is usually created to combine leaves and other branches.
+
+    It has settings to modify naming conventions for the
+    selectors and reducers.
+*/
+
+ReduxBranch._newState
+/*
+    payload => state
+    (optional)
+    Called once when a class instance is created.
+    The value returned here is the initial state
+    for that branch. Not suggested since it can
+    break
+*/
+```
+
+```js
+ReduxBranch,
+ReduxPolyBranch,
+ReduxRoot,
+createReduxLeaf,
+createReduxBranch,
+createReduxPolyBranch,
+createReduxRoot
+```
+
 To install
 
 ```sh
