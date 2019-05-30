@@ -8,10 +8,9 @@ const env = process.env.NODE_ENV;
 
 const config = {
   input: 'src/index.js',
-  external: ['react', 'react-dom'],
   output: {
     format: 'umd',
-    name: 'npmPackageES6Boilerplate',
+    name: 'reduxShrub',
   },
 
   plugins: [
@@ -27,17 +26,17 @@ const config = {
   ],
 };
 
-if (env === 'production') {
-  config.plugins.push(
-    uglify({
-      compress: {
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true,
-        warnings: false,
-      },
-    }),
-  );
-}
+// if (env === 'production') {
+//   config.plugins.push(
+//     uglify({
+//       compress: {
+//         pure_getters: true,
+//         unsafe: true,
+//         unsafe_comps: true,
+//         warnings: false,
+//       },
+//     }),
+//   );
+// }
 
 export default config;

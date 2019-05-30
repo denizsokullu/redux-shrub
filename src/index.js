@@ -1,4 +1,11 @@
-import { ReduxLeaf, ReduxBranch, ReduxPolyBranch, ReduxRoot} from './source';
+import { ReduxLeaf,
+         ReduxBranch,
+         ReduxPolyBranch,
+         ReduxRoot,
+         compose,
+         branch,
+         leaf
+       } from './source';
 
 const createReduxLeaf = (slug, initialState, options = {}) => new ReduxLeaf({
   slug,
@@ -28,6 +35,31 @@ const createReduxRoot = (slug, children = {}, options = {}) =>
     ...options
   })
 
+// TODO
+class StringLeaf extends ReduxLeaf {
+  _newState = (initialState) => typeof initialState === 'string' ? initialState : ''
+}
+
+class ArrayLeaf extends ReduxLeaf {
+
+}
+
+class MapLeaf extends ReduxLeaf {
+
+}
+
+class IntegerLeaf extends ReduxLeaf {
+  _newState = (initialState) => typeof initialState === 'number' ? initialState : 0
+}
+
+class SetLeaf extends ReduxLeaf {
+
+}
+
+class OrderedSetLeaf extends ReduxLeaf {
+
+}
+
 export { ReduxLeaf,
          ReduxBranch,
          ReduxPolyBranch,
@@ -35,5 +67,8 @@ export { ReduxLeaf,
          createReduxLeaf,
          createReduxBranch,
          createReduxPolyBranch,
-         createReduxRoot
+         createReduxRoot,
+         compose,
+         branch,
+         leaf
         }

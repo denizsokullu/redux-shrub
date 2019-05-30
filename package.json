@@ -28,7 +28,9 @@
     "dev": "cross-env NODE_ENV=development rollup -c -o lib/index.js",
     "build": "cross-env NODE_ENV=production rollup -c -o lib/index.js",
     "coveralls": "npm run test:cover && cat ./coverage/lcov.info | coveralls",
-    "prepare": "npm run clean && npm run build"
+    "prepare": "npm run clean && npm run build",
+    "build-test": "cross-env NODE_ENV=production rollup -c rollup.config.test.js -o test/index-compiled.js",
+    "test": "npm run build-test && node test/index-compiled.js"
   },
   "peerDependencies": {
     "react": "^15 || ^16",
