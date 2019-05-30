@@ -32,10 +32,6 @@
     "build-test": "cross-env NODE_ENV=production rollup -c rollup.config.test.js -o test/index-compiled.js",
     "test": "npm run build-test && node test/index-compiled.js"
   },
-  "peerDependencies": {
-    "react": "^15 || ^16",
-    "react-dom": "^15 || ^16"
-  },
   "dependencies": {
     "babel-runtime": "^6.26.0"
   },
@@ -53,14 +49,10 @@
     "babel-preset-stage-0": "6.24.1",
     "coveralls": "3.0.0",
     "cross-env": "5.1.4",
-    "enzyme": "3.3.0",
-    "enzyme-adapter-react-16": "1.1.1",
     "eslint": "4.19.1",
     "eslint-plugin-import": "2.11.0",
     "eslint-plugin-jsx-a11y": "6.0.3",
     "eslint-plugin-react": "7.7.0",
-    "flow-bin": "0.70.0",
-    "flow-typed": "2.4.0",
     "fs-file-tree": "1.0.6",
     "jest": "22.4.3",
     "immutable": "^4.0.0-rc.12",
