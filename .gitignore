@@ -18,3 +18,4 @@ flow-typed/npm/*
 
 # Release
 lib
+test/index-compiled.js
