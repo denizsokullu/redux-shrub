@@ -2,36 +2,16 @@ const ReduxShrub = require('../lib');
 const util = require('util')
 const _ = require('lodash');
 const uuid = require('uuid/v1');
-/*
-
-  reduxShrub
-
-    pass in ReduxBranch // ReduxRoot structure
-    options: {
-      encyrptKeys: false
-      flatten: false
-    }
-
-    .reducer()
-    .actions()
-    .selectors()
-
-
-    tasks:
-      - enable JSON actions on branches
-*/
-
 
 const { compose, branch, leaf } = ReduxShrub;
+
+/*
+Helpers
+*/
 
 const inspect = (obj) => {
   console.log(util.inspect(obj, {showHidden: false, depth: null}))
 }
-
-// Test 1
-
-// relatively small tree update
-
 
 const createDeepBranch = (limit, children = null, depth = 0) => {
   if (depth === 0) {
@@ -91,14 +71,17 @@ class SimpleLeaf {
   }
 }
 
+// Test 1
+
+// relatively small tree update
 
 const test1 = (repeats) => {
-  const branch1 = branch('branch1', SimpleBranch, [
+  const branch1 = branch('branch1', null, [
     leaf('leaf1', SimpleLeaf),
     leaf('leaf2', SimpleLeaf)
   ])
-  const branch2 = branch('branch2', SimpleBranch, [ leaf('leaf3', SimpleLeaf) ]);
-  const shrub = compose([ branch('mainBranch', SimpleBranch, [ branch1, branch2 ])])
+  const branch2 = branch('branch2', null, [ leaf('leaf3', SimpleLeaf) ]);
+  const shrub = compose([ branch('mainBranch', null, [ branch1, branch2 ])])
   let state = shrub.reducer(undefined, 'init');
   console.log(`this test example has ${countKeys(state)} nodes`)
   const testStart = Date.now();
@@ -141,13 +124,13 @@ const test3 = (repeats, depth, siblings) => {
 console.log('Starting performance tests:')
 console.log('Running 1000 actions on a simple shrub')
 test1(1000);
-console.log('Running 1000 actions on a shrub with depth of 4')
-test2(1000, 4);
-console.log('Running 1000 actions on a shrub with depth of 12 and 2 siblings at each level')
-test3(1000, 12, 2);
-console.log('Running 1000 actions on a shrub with depth of 7 and 5 siblings at each level')
-test3(1, 7, 5);
-console.log('Running 1000 actions on a shrub with depth of 16 and 2 siblings at each level')
-test3(1, 16, 2);
-console.log('Running 1000 actions on a shrub with depth of 9 and 4 siblings at each level')
-test3(1, 9, 4);
+// console.log('Running 1000 actions on a shrub with depth of 4')
+// test2(1000, 4);
+// console.log('Running 1000 actions on a shrub with depth of 12 and 2 siblings at each level')
+// test3(1000, 12, 2);
+// console.log('Running 1000 actions on a shrub with depth of 7 and 5 siblings at each level')
+// test3(1, 7, 5);
+// console.log('Running 1000 actions on a shrub with depth of 16 and 2 siblings at each level')
+// test3(1, 16, 2);
+// console.log('Running 1000 actions on a shrub with depth of 9 and 4 siblings at each level')
+// test3(1, 9, 4);
