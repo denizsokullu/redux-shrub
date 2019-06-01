@@ -7,6 +7,7 @@ import camelCase from 'lodash/camelCase'
 import keys from 'lodash/keys'
 import startsWith from 'lodash/startsWith'
 import merge from 'lodash/merge'
+import isObject from 'lodash/isObject'
 
 // ideas: make it native objects
 
@@ -595,6 +596,9 @@ class ReduxLeaf extends ReduxShrub {
     super(props)
     this.type = 'leaf'
     this.reducerInstance = new props.reducerClass()
+    if (typeof this.reducerInstance.newState !== 'function') {
+      throw new Error(`${this.reducerInstance} does not have a proper newState method`)
+    }
   }
 
   _newState = () => this.reducerInstance.newState()
@@ -620,6 +624,9 @@ class ReduxBranch extends ReduxShrub {
   constructor(props){
     super(props)
     this.type = 'branch'
+    if (!isObject(props.children)) {
+      throw new Error('Branch requires an object as for the children params.')
+    }
     this.children = props.children || {}
     this.reducerInstance = new props.reducerClass()
   }
@@ -636,7 +643,7 @@ class ReduxBranch extends ReduxShrub {
 
   _toJSON = (state, isRoot = false) => {
     const collectedState = mapValues(this.children, (child, key) => {
-      return child._toJSON(state.get(key))
+      return child._toJSON(state[key])
     });
     return isRoot ? JSON.stringify(collectedState) : collectedState;
   }
@@ -674,7 +681,10 @@ class ReduxBranch extends ReduxShrub {
     return (state = defaultState, action) => {
       let currentReducer = reducers[action.type]
       if(currentReducer && typeof currentReducer === 'function') return currentReducer(state)(action.payload)
-      else return state
+      else {
+        console.warn('Given action is not a correct action. These are the available actions:', keys(reducers))
+        return state
+      }
     }
   }
 
@@ -756,8 +766,11 @@ class ReduxPolyBranch extends ReduxBranch {
     if (!this.reducerInstance.remove) {
       this.reducerInstance.remove = state => payload => {
         let id = payload[this.accessor]
+        if (!id) {
+          throw new Error(`${id} is not an existing key`)
+        }
         delete state[id]
-        return { ...state };
+        return { ...state }
       }
     }
   }
@@ -771,6 +784,9 @@ class ReduxPolyBranch extends ReduxBranch {
     let propagatedReducers = mapValues(childReducers, (reducer, key) => {
         return state => payload => {
           let innerState = state[payload[this.accessor]]
+          if (typeof innerState === 'undefined') {
+            throw new Error(`${innerState} is not a valid stub of the state`)
+          }
           let newInnerState = reducer(innerState)(payload)
           return { ...state, [payload[this.accessor]]: newInnerState }
       }
@@ -790,7 +806,7 @@ class ReduxPolyBranch extends ReduxBranch {
     childSelectors = mapValues(childSelectors,
       (selector, childKey) => {
         return (state, payload) => {
-          return selector(state.get(payload[this.accessor]), payload)
+          return selector(state[payload[this.accessor]], payload)
         }
       }
     )
