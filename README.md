@@ -1,5 +1,5 @@
 # redux-shrub
-![Redux Shrub Logo](redux-shrub.svg?raw=true "Redux Shrub Logo")
+![Redux Shrub Logo](./redux-shrub.svg "Redux Shrub Logo")
 Branch - Leaf based Redux framework that creates the reducers, actions and selectors on the go.
 
 The idea is based on incorporating a OOP approach to redux store design and action declaring.
