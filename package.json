@@ -1,6 +1,6 @@
 {
   "name": "redux-shrub",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Branch - Leaf based Redux framework that creates the reducers, actions and selectors on the go.",
   "keywords": [
     "npm-package",
