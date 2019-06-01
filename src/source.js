@@ -546,12 +546,14 @@ class ReduxShrub {
                 includeSlugInChildSelectors = false,
                 includeSlugInChildReducers = false,
                 includeJSONAction = false,
+                ignorePrefix = '_'
                }){
     this.slug = slug
     this.includeSelfSelector = includeSelfSelector
     this.includeSlugInChildSelectors = includeSlugInChildSelectors
     this.includeSlugInChildReducers = includeSlugInChildReducers
     this.includeJSONAction = includeJSONAction
+    this.ignorePrefix = ignorePrefix
   }
 
   _composeSelfReducers = () => {
@@ -574,6 +576,7 @@ class ReduxShrub {
     return keys(this.reducerInstance)
       .filter(key => typeof this.reducerInstance[key] === 'function')
       .filter(key => key !== 'newState')
+      .filter(key => !key.startsWith(this.ignorePrefix))
       .filter(this._isNotJSONAction.bind(this))
   }
 

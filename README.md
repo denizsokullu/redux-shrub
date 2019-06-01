@@ -1,157 +1,117 @@
 # redux-shrub
+![Redux Shrub Logo](redux-shrub.svg?raw=true "Redux Shrub Logo")
 Branch - Leaf based Redux framework that creates the reducers, actions and selectors on the go.
 
 The idea is based on incorporating a OOP approach to redux store design and action declaring.
 
-I personally felt challenged with the lack of structure that can could be given with a redux framework and went ahead and created one. This framework provides a structure in which the user doesn't have to worry about creating 3 different functions. Reducers, actions and selectors are created as you declare new leaves in your
-state tree.
+## Table of Contents
 
-This is still at it's early stages. Plans for the future:
-- Adding null checks!
-- Providing more options and modularity.
+* [Concepts](#concepts)
+* [Main Components](#main-components)
+* [Installation](#installation)
+* [Examples](#examples)
 
-Example usage
+## Concepts
+
+*How does this work with Redux*
+It actually doesn't require Redux to work. It produces a reducer that can be used to manipulate the state that redux keeps track of. And if you call the reducer function with an initial state of `undefined` it give you the state! In addition to that, it creates the actions and selectors from the information passed in. So in the end, all you need to define are classes that interact with parts of the tree(leaves, branches) using their methods(each method becomes an action).
+
+*How is a shrub different than a tree?*
+Shrub is subset of trees as a data structure. The concept of a shrub is that the data is only on the leaves on of the tree. By keeping the data only on the leaves, it becomes really simple to trace bugs and reason about the structure of the data stored globally.
+
+*Reasoning behind coming up with redux-shrub*
+I personally felt challenged with the lack of structure that can could be given with a redux framework and went ahead and created one. This framework provides a structure in which the user doesn't have to worry about creating 3 different functions. Reducers, actions and selectors are created as you declare new leaves in your state tree. It has similar API to [redux-tree](https://www.npmjs.com/package/redux-tree) but does more than that.
+
+## Main Components
+
+There are 3 types of building blocks to a shrub.
+
+### leaf
+
+This is where you keep your data. These will be at the end of a path on the tree and will have actions to modify them.
+
+### branch
+
+This is how you organize your data, you create different branches to split your information/leaves.
+
+### polyBranch
+
+This is a bit more complex but is necessary in a lot cases. Let's say you have multiple entries for a data object in your redux store.
+```js
+{
+  'article-1': {...some data}
+  'article-2': {...same data here, maybe the values are different but same structure}
+  'article-3': {...same data here, maybe the values are different but same structure}
+  ...
+}
+```
+In this case, you can't manually set your tree to have a certain number of branches. And if you want to have actions for the data inside of these keys, you don't want to have duplicate actions. To solve this, you can define a way to produce keys and pass that in to a `polyBranch()` with whatever other branches / leaves you want in it and it will handle the rest. A bit magical but trust me it works :)
+
+##
+
+## Installation
+
+```sh
+npm i redux-shrub
+```
+
+## Examples
 
 ```js
-import { ReduxLeaf, createReduxRoot } from 'redux-shrub';
-import { Set } from 'immutable';
+import { compose, leaf } from 'redux-shrub';
 
-class TodosReducer extends ReduxLeaf {
-  // payload is an object passed in when creating
-  // a new reducer
-  _newState = (payload) => Set()
+class NameReducer {
+  // this is what is called to
+  // generate your initial state
+  newState (){
+    return 'initial name'
+  }
   // this method will become an action
-  update = state => payload => state.add(payload)
+  update = state => payload => payload.newName
 }
 
-const todos = new TodosReducer({
-  slug: 'todos'
-});
+const todos = leaf('name', NameReducer);
 
-const store = createReduxRoot('root', { todos });
+const shrub = compose([ todos ]);
 
-const mainReducer =  store._createMainReducer();
-const actions = store._composeActions();
-const selectors = store._composeSelectors();
+// Fake what redux does to generate the initial state
+const reducer =  shrub.reducer(undefined, '@@init');
+const actions = shrub.actions;
+const selectors = shrub.selectors;
 
-// actions created
-// TODOS_UPDATE
-
-// selectors created
-// todos(state) => todo store
-
+console.log(reducer, actions, selectors)
+// { name: 'initial name' } { NAME_UPDATE: [Function] } { name: [Function] }
 ```
 
 Another example
 
 ```js
-import { ReduxLeaf, ReduxBranch, createReduxRoot } from 'redux-shrub';
-import { Set } from 'immutable';
+import { compose, leaf, branch } from 'redux-shrub';
 
-class TodosReducer extends ReduxLeaf {
-  // payload is an object passed in when creating
-  // a new reducer
-  _newState = (payload) => Set()
+class NameReducer {
+  // this is what is called to
+  // generate your initial state
+  newState (){
+    return 'initial name'
+  }
   // this method will become an action
-  update = state => payload => state.add(payload)
+  update = state => payload => payload.newName
 }
 
-const todos = new TodosReducer({
-  slug: 'todos'
-});
+class DataReducer {
 
-const todosAndStrings = new ReduxBranch({
-  slug: 'todosAndStrings',
-  children: {
-    todos,
-    strings: new ReduxLeaf({ slug: 'strings', initialState: 'asd' })
-  }
-})
+}
 
-const store = createReduxRoot('root', { todosAndStrings });
+const todos = leaf('name', NameReducer);
+const data = branch('data', DataReducer, [ todos ]);
 
-const mainReducer =  store._createMainReducer();
-const actions = store._composeActions();
-const selectors = store._composeSelectors();
+const shrub = compose([ data ]);
 
-// actions created
-// TODOS_UPDATE
+// Fake what redux does to generate the initial state
+const reducer =  shrub.reducer(undefined, '@@init');
+const actions = shrub.actions;
+const selectors = shrub.selectors;
 
-// selectors created
-todos(state);
-// Set()
-strings(state);
-// 'asd'
-
-```
-
-API Documentation:
-```js
-class ReduxLeaf
-/*
-    slug: string
-    initialState: state of the leaf
-    options: object
-
-    The smallest building block of a redux tree.
-    A leaf can contain any type of data as its state.
-    The class can be extended to create reducers and
-    declare a function _newState that will can be
-    used to transform the initial payload to an initial
-    state.
-
-    If ReduxLeaf is not extended to create a new sub class,
-    there isn't currently a way to declare reducers.
-*/
-
-ReduxLeaf._newState
-/*
-    payload => state
-    (optional)
-    Called once when a class instance is created.
-    The value returned here is the initial state
-    for that leaf.
-*/
-```
-
-```js
-class ReduxBranch
-/*
-    slug: string
-    children: object with values ReduxLeaf, ReduxBranch
-    options: object
-
-    The glue of a redux tree.
-    A branch can be sub classed to create reducers but it
-    is usually created to combine leaves and other branches.
-
-    It has settings to modify naming conventions for the
-    selectors and reducers.
-*/
-
-ReduxBranch._newState
-/*
-    payload => state
-    (optional)
-    Called once when a class instance is created.
-    The value returned here is the initial state
-    for that branch. Not suggested since it can
-    break
-*/
-```
-
-```js
-ReduxBranch,
-ReduxPolyBranch,
-ReduxRoot,
-createReduxLeaf,
-createReduxBranch,
-createReduxPolyBranch,
-createReduxRoot
-```
-
-To install
-
-```sh
-npm i redux-shrub
+console.log(reducer, actions, selectors)
+// { data: { name: 'initial name' } } { NAME_UPDATE: [Function] } { name: [Function], data: [Function] }
 ```
