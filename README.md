@@ -13,13 +13,13 @@ The idea is based on incorporating a OOP approach to redux store design and acti
 
 ## Concepts
 
-*How does this work with Redux*
+**How does this work with Redux**
 It actually doesn't require Redux to work. It produces a reducer that can be used to manipulate the state that redux keeps track of. And if you call the reducer function with an initial state of `undefined` it give you the state! In addition to that, it creates the actions and selectors from the information passed in. So in the end, all you need to define are classes that interact with parts of the tree(leaves, branches) using their methods(each method becomes an action).
 
-*How is a shrub different than a tree?*
+**How is a shrub different than a tree?**
 Shrub is subset of trees as a data structure. The concept of a shrub is that the data is only on the leaves on of the tree. By keeping the data only on the leaves, it becomes really simple to trace bugs and reason about the structure of the data stored globally.
 
-*Reasoning behind coming up with redux-shrub*
+**Reasoning behind coming up with redux-shrub**
 I personally felt challenged with the lack of structure that can could be given with a redux framework and went ahead and created one. This framework provides a structure in which the user doesn't have to worry about creating 3 different functions. Reducers, actions and selectors are created as you declare new leaves in your state tree. It has similar API to [redux-tree](https://www.npmjs.com/package/redux-tree) but does more than that.
 
 ## Main Components
